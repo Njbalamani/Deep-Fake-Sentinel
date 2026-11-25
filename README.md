@@ -334,7 +334,7 @@ See [docs/architecture.md](docs/architecture.md) for the full component map and 
 | Configuration | python-dotenv | Environment file loading. |
 | YAML validation | PyYAML | Deployment config verification. |
 | Imaging | Pillow, piexif | Image decoding, transforms, EXIF extraction. |
-| Video | opencv-python-headless, imageio-ffmpeg | Frame extraction and container probing. |
+| Video | opencv-contrib-python, imageio-ffmpeg | Frame extraction and container probing. |
 | Face geometry | MediaPipe | Optional face-region detection. |
 | Deep learning | PyTorch, torchvision | Model definition, training, inference. |
 | Classical ML | scikit-learn, pandas, numpy | Metrics, manifests, tabular processing. |
@@ -367,6 +367,7 @@ DeepFakeSentinel/
 ├── ml_models/                 Local model documentation and checkpoint folders
 │   ├── audio/
 │   ├── image/
+│   ├── mediapipe/
 │   └── video/
 ├── ml_training/               Manifest, preprocess, train, eval, inference tools
 │   ├── datasets/
