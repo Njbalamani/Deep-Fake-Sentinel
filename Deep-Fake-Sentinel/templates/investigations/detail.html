@@ -1,0 +1,85 @@
+{% extends "workspace.html" %}
+{% load static %}
+
+{% block title %}Investigation detail — DeepFake Sentinel{% endblock %}
+{% block sidebar_active %}investigations{% endblock %}
+{% block workspace_breadcrumb %}Workspace / Case file{% endblock %}
+{% block workspace_title %}Investigation case file{% endblock %}
+{% block page_key %}investigation-detail{% endblock %}
+
+{% block workspace_head %}
+<div class="page-head" id="investigationDetail" data-investigation-id="{{ investigation_id|default:'' }}">
+  <div>
+    <h1 id="caseDetailTitle">Case file</h1>
+    <p id="caseDetailSubtitle">Loading case record from the API…</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost btn--sm" href="/investigations/">All cases</a>
+    <button class="btn btn--outline btn--sm" id="refreshCaseBtn" type="button">Refresh case</button>
+    <a class="btn btn--gold btn--sm" href="/reports/">Reports</a>
+  </div>
+</div>
+<div class="stat-grid" id="caseDetailStats">
+  <article class="stat-card"><small>Status</small><strong id="caseDetailStatus" style="font-size:1.5rem">—</strong><span>Case state</span></article>
+  <article class="stat-card"><small>Assignee</small><strong id="caseDetailAssignee" style="font-size:1.5rem">—</strong><span>Ownership</span></article>
+  <article class="stat-card"><small>Priority</small><strong id="caseDetailPriority" style="font-size:1.5rem">—</strong><span>Triage level</span></article>
+  <article class="stat-card"><small>Evidence items</small><strong id="caseDetailEvidenceCount">—</strong><span>Linked artifacts</span></article>
+</div>
+{% endblock %}
+
+{% block workspace_content %}
+<div class="dash-grid">
+  <div class="dash-stack">
+    <section class="panel" aria-labelledby="caseAboutTitle">
+      <div class="panel__head"><div><h2 id="caseAboutTitle">Case brief</h2><p>Recorded scope and context.</p></div><span class="status-badge" id="caseDetailBadge">loading</span></div>
+      <div class="panel__body"><p id="caseDetailDescription" class="muted">Loading…</p><dl class="kv-list"><div><dt>Case ID</dt><dd id="caseDetailId">—</dd></div><div><dt>Created</dt><dd id="caseDetailCreated">—</dd></div><div><dt>Updated</dt><dd id="caseDetailUpdated">—</dd></div></dl></div>
+    </section>
+
+    <section class="panel" aria-labelledby="evidenceTitle">
+      <div class="panel__head"><div><h2 id="evidenceTitle">Media evidence</h2><p>Artifacts attached to this case.</p></div><a class="btn btn--quiet btn--sm" href="/media/">Add evidence →</a></div>
+      <div class="panel__body">
+        <div class="state-box is-hidden" id="evidenceLoading"><div class="state-box__inner"><strong>Loading evidence</strong><p>Reading linked media records.</p></div></div>
+        <div class="state-box is-hidden" id="evidenceEmpty"><div class="state-box__inner"><strong>No linked evidence</strong><p>Attach a media artifact from the library.</p></div></div>
+        <div class="state-box state-box--error is-hidden" id="evidenceError"><div class="state-box__inner"><strong>Evidence unavailable</strong><p>The case API could not return linked media.</p></div></div>
+        <div id="detailEvidenceList"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="timelineTitle">
+      <div class="panel__head"><div><h2 id="timelineTitle">Case timeline</h2><p>Chronological activity recorded for this investigation.</p></div><button class="btn btn--quiet btn--sm" id="refreshTimelineBtn" type="button">Reload timeline</button></div>
+      <div class="panel__body">
+        <div class="state-box" id="timelineLoading"><div class="state-box__inner"><strong>Loading timeline</strong><p>Reading case activity.</p></div></div>
+        <div class="state-box is-hidden" id="timelineEmpty"><div class="state-box__inner"><strong>No timeline events</strong><p>No activity has been recorded yet.</p></div></div>
+        <div class="state-box state-box--error is-hidden" id="timelineError"><div class="state-box__inner"><strong>Timeline unavailable</strong><p id="timelineErrorDetail">The timeline API could not be reached.</p></div></div>
+        <ul class="timeline" id="caseTimeline"></ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="dash-stack">
+    <section class="panel" aria-labelledby="observationTitle">
+      <div class="panel__head"><div><h2 id="observationTitle">Observations</h2><p>Add a review note to the case record.</p></div><button class="btn btn--quiet btn--sm" id="refreshObservationsBtn" type="button">Reload</button></div>
+      <div class="panel__body">
+        <div class="form-alert" id="observationAlert" role="alert" aria-live="assertive"></div>
+        <form class="form-grid" id="observationForm" novalidate>
+          <div class="field"><label for="observationAuthor">Reviewer</label><input type="text" id="observationAuthor" name="author" placeholder="Analyst name"></div>
+          <div class="field"><label for="observationText">Observation</label><textarea id="observationText" name="note" placeholder="Record what was observed and how it was verified" required></textarea><span class="field__error" id="error_note" aria-live="polite"></span></div>
+          <button class="btn btn--gold btn--sm" id="observationSubmit" type="submit">Add observation</button>
+        </form>
+        <div style="margin-top:22px">
+          <div class="state-box is-hidden" id="observationEmpty"><div class="state-box__inner"><strong>No observations</strong><p>Review notes will appear here.</p></div></div>
+          <ul class="observations" id="observationList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="accessTitle">
+      <div class="panel__head"><div><h2 id="accessTitle">Access history</h2><p>Recorded access events for accountability.</p></div></div>
+      <div class="panel__body">
+        <div class="state-box is-hidden" id="accessEmpty"><div class="state-box__inner"><strong>No access records</strong><p>Access events were not returned by the API.</p></div></div>
+        <ul class="timeline" id="accessHistory"></ul>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

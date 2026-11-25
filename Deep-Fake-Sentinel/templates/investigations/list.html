@@ -1,0 +1,53 @@
+{% extends "workspace.html" %}
+{% load static %}
+
+{% block title %}Investigations — DeepFake Sentinel{% endblock %}
+{% block sidebar_active %}investigations{% endblock %}
+{% block workspace_breadcrumb %}Workspace / Case registry{% endblock %}
+{% block workspace_title %}Investigations{% endblock %}
+{% block page_key %}investigations{% endblock %}
+
+{% block workspace_head %}
+<div class="page-head">
+  <div>
+    <h1>Case registry.</h1>
+    <p>Create, assign and review investigations linked to media evidence.</p>
+  </div>
+  <div class="page-head__actions">
+    <button class="btn btn--ghost btn--sm" id="refreshCasesBtn" type="button">Refresh</button>
+    <button class="btn btn--gold btn--sm" id="openCaseFormBtn" type="button" aria-expanded="false" aria-controls="newCaseFormPanel">New investigation</button>
+  </div>
+</div>
+<form class="filter-bar" id="caseFilters" role="search">
+  <div class="field"><label for="caseSearch">Search cases</label><input type="search" id="caseSearch" name="search" placeholder="Title, case ID or assignee"></div>
+  <div class="field"><label for="caseStatus">Status</label><select id="caseStatus" name="status"><option value="">All statuses</option><option value="open">Open</option><option value="in_progress">In progress</option><option value="closed">Closed</option></select></div>
+  <button class="btn btn--outline btn--sm" type="submit">Apply filters</button>
+  <button class="btn btn--quiet btn--sm" id="clearCaseFilters" type="button">Clear</button>
+</form>
+<section class="panel is-hidden" id="newCaseFormPanel" aria-labelledby="newCaseTitle">
+  <div class="panel__head"><div><h2 id="newCaseTitle">Open an investigation</h2><p>Case metadata is stored by the investigation API.</p></div></div>
+  <div class="panel__body">
+    <div class="form-alert" id="caseFormAlert" role="alert" aria-live="assertive"></div>
+    <form class="form-grid" id="newCaseForm" novalidate>
+      <div class="grid-2">
+        <div class="field"><label for="caseTitleInput">Case title</label><input type="text" id="caseTitleInput" name="title" placeholder="Synthetic voice clip — regional office" required><span class="field__error" id="error_title" aria-live="polite"></span></div>
+        <div class="field"><label for="caseAssignee">Assignee</label><input type="text" id="caseAssignee" name="assigned_to" placeholder="Analyst username or ID"><span class="field__error" id="error_assigned_to" aria-live="polite"></span></div>
+      </div>
+      <div class="field"><label for="caseDescription">Description</label><textarea id="caseDescription" name="description" placeholder="Initial scope and context"></textarea></div>
+      <div class="field"><label for="casePriority">Priority</label><select id="casePriority" name="priority"><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="CRITICAL">Critical</option><option value="LOW">Low</option></select></div>
+      <div style="display:flex;gap:10px"><button class="btn btn--gold btn--sm" type="submit">Create investigation</button><button class="btn btn--ghost btn--sm" id="cancelCaseForm" type="button">Cancel</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block workspace_content %}
+<section aria-labelledby="caseListTitle">
+  <h2 class="is-hidden" id="caseListTitle">Investigation list</h2>
+  <div class="state-box" id="caseListLoading"><div class="state-box__inner"><strong>Loading investigations</strong><p>Reading the case registry from the API.</p></div></div>
+  <div class="state-box is-hidden" id="caseListEmpty"><div class="state-box__inner"><img src="{% static 'images/forensic-frame.svg' %}" alt="" width="220" height="138"><strong>No investigations found</strong><p>Adjust filters or open a new case.</p></div></div>
+  <div class="state-box state-box--error is-hidden" id="caseListError"><div class="state-box__inner"><strong>Case registry unavailable</strong><p id="caseListErrorDetail">The API could not return investigations.</p></div></div>
+  <div class="grid-3" id="caseCards" aria-live="polite"></div>
+  <p class="muted mono" id="caseCount" style="margin-top:20px"></p>
+</section>
+{% endblock %}

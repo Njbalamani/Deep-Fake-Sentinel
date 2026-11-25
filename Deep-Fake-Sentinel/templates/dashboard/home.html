@@ -1,0 +1,193 @@
+{% extends "workspace.html" %}
+{% load static %}
+
+{% block title %}Command center — DeepFake Sentinel{% endblock %}
+{% block sidebar_active %}dashboard{% endblock %}
+{% block workspace_breadcrumb %}Command / Analysis workspace{% endblock %}
+{% block workspace_title %}Forensic command center{% endblock %}
+
+{% block page_key %}dashboard{% endblock %}
+
+{% block workspace_head %}
+<div class="page-head">
+  <div>
+    <h1>Analysis overview.</h1>
+    <p>Ingest evidence, inspect forensic signals, and generate defensible reports from live API data.</p>
+  </div>
+  <div class="page-head__actions">
+    <button class="btn btn--ghost btn--sm" id="refreshDashboardBtn" type="button">Refresh all</button>
+    <a class="btn btn--outline btn--sm" href="/media/">Media library</a>
+    <a class="btn btn--gold btn--sm" href="#uploadPanel">Upload evidence</a>
+  </div>
+</div>
+<div class="stat-grid" id="analyticsCards">
+  <article class="stat-card"><small>Media in workspace</small><strong data-stat-value="total_media">—</strong><span data-stat-note="total_media">Awaiting API</span></article>
+  <article class="stat-card"><small>Analyses tracked</small><strong data-stat-value="analyses">—</strong><span data-stat-note="analyses">Awaiting API</span></article>
+  <article class="stat-card"><small>Open investigations</small><strong data-stat-value="open_cases">—</strong><span data-stat-note="open_cases">Awaiting API</span></article>
+  <article class="stat-card"><small>Generated reports</small><strong data-stat-value="reports">—</strong><span data-stat-note="reports">Awaiting API</span></article>
+</div>
+{% endblock %}
+
+{% block workspace_content %}
+<div class="dash-grid">
+  <div class="dash-stack">
+    <section class="panel" id="uploadPanel" aria-labelledby="uploadTitle">
+      <div class="panel__head">
+        <div><h2 id="uploadTitle">Evidence intake</h2><p>Multiple files supported. Uploaded artifacts enter the analysis queue.</p></div>
+        <button class="btn btn--quiet btn--sm" id="clearUploadQueue" type="button">Clear queue</button>
+      </div>
+      <div class="panel__body">
+        <div class="dropzone" id="dropZone">
+          <div>
+            <div class="dropzone__icon" aria-hidden="true">⇪</div>
+            <strong>Drop media evidence here</strong>
+            <p>Images, video and audio · files remain under analyst control</p>
+            <button class="btn btn--outline btn--sm" id="browseBtn" type="button">Browse files</button>
+            <input class="is-hidden" type="file" id="fileInput" name="files" multiple accept="image/*,video/*,audio/*">
+          </div>
+        </div>
+        <div class="upload-queue" id="uploadQueue" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="resultTitle">
+      <div class="panel__head">
+        <div><h2 id="resultTitle">Detection results</h2><p id="resultCaption">Select an artifact from the evidence library to inspect its analysis.</p></div>
+        <div class="panel__actions">
+          <button class="btn btn--ghost btn--sm" id="refreshStatusBtn" type="button" disabled>Refresh status</button>
+          <button class="btn btn--outline btn--sm" id="reprocessBtn" type="button" disabled>Reprocess</button>
+        </div>
+      </div>
+      <div class="panel__body">
+        <div class="state-box is-hidden" id="resultLoading"><div class="state-box__inner"><span class="state-box__glyph" aria-hidden="true">◌</span><strong>Loading analysis</strong><p>Retrieving API results for the selected artifact.</p></div></div>
+        <div class="state-box" id="resultEmpty"><div class="state-box__inner"><img src="{% static 'images/forensic-frame.svg' %}" alt="" width="240" height="150"><strong id="resultEmptyTitle">No artifact selected</strong><p>Choose a media item below, or upload new evidence to begin.</p></div></div>
+        <div class="state-box state-box--error is-hidden" id="resultError"><div class="state-box__inner"><span class="state-box__glyph" aria-hidden="true">!</span><strong id="resultErrorText">Analysis unavailable</strong><p id="resultErrorDetail">The API could not complete this request.</p></div></div>
+        <div class="is-hidden" id="resultContent" aria-live="polite">
+          <div class="result-hero">
+            <span class="result-hero__label">Current conclusion</span>
+            <strong class="result-hero__verdict" id="resultVerdict">—</strong>
+            <div class="result-hero__meta">
+              <span id="resultMediaName">—</span>
+              <span class="status-badge" id="resultStatus">unknown</span>
+              <span id="resultTimestamp">—</span>
+            </div>
+            <div class="confidence" id="confidenceBlock">
+              <div class="confidence__head"><span>Model confidence</span><strong id="confidenceValue">Not reported</strong></div>
+              <div class="progress"><div class="progress__bar" id="confidenceBar"></div></div>
+            </div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="tabs" role="tablist" aria-label="Analysis detail sections">
+              <button class="tab" id="tab-overview" type="button" role="tab" aria-selected="true" aria-controls="panel-overview" data-tab="overview">Overview</button>
+              <button class="tab" id="tab-frames" type="button" role="tab" aria-selected="false" aria-controls="panel-frames" data-tab="frames">Frames</button>
+              <button class="tab" id="tab-evidence" type="button" role="tab" aria-selected="false" aria-controls="panel-evidence" data-tab="evidence">Evidence</button>
+              <button class="tab" id="tab-explanations" type="button" role="tab" aria-selected="false" aria-controls="panel-explanations" data-tab="explanations">Explanations</button>
+            </div>
+            <div class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+              <div class="modality-grid">
+                <div class="modality-card"><small>Image analysis</small><strong id="analysisImage">—</strong><span id="analysisImageNote">Awaiting API</span></div>
+                <div class="modality-card"><small>Video analysis</small><strong id="analysisVideo">—</strong><span id="analysisVideoNote">Awaiting API</span></div>
+                <div class="modality-card"><small>Audio analysis</small><strong id="analysisAudio">—</strong><span id="analysisAudioNote">Awaiting API</span></div>
+              </div>
+              <div style="margin-top:22px"><h3 style="margin-bottom:12px">Detected signals</h3>
+                <ul class="signal-list" id="signalList"></ul>
+                <div class="state-box is-hidden" id="signalEmpty"><div class="state-box__inner"><strong>No signals returned</strong><p>The analysis API reported no measurable signals for this artifact.</p></div></div>
+              </div>
+              <div style="margin-top:22px"><h3 style="margin-bottom:12px">Forensic timeline</h3>
+                <ul class="timeline" id="forensicTimeline"></ul>
+                <div class="state-box is-hidden" id="timelineEmpty"><div class="state-box__inner"><strong>No timeline data</strong><p>No forensic events were returned for this artifact.</p></div></div>
+              </div>
+            </div>
+            <div class="tab-panel is-hidden" id="panel-frames" role="tabpanel" aria-labelledby="tab-frames">
+              <div class="frame-grid" id="frameGrid"></div>
+              <div class="state-box is-hidden" id="framesEmpty"><div class="state-box__inner"><img src="{% static 'images/forensic-frame.svg' %}" alt="" width="220" height="138"><strong>No frames available</strong><p>Frame-level evidence was not returned for this artifact.</p></div></div>
+            </div>
+            <div class="tab-panel is-hidden" id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence">
+              <div class="grid-2">
+                <div><h3 style="margin-bottom:10px">Integrity checks</h3><div id="integrityList" class="evidence-list"></div></div>
+                <div><h3 style="margin-bottom:10px">Metadata</h3><dl class="kv-list" id="metadataList"></dl></div>
+              </div>
+              <div class="state-box is-hidden" id="evidenceEmpty"><div class="state-box__inner"><strong>No evidence records</strong><p>Metadata or integrity services returned no records for this artifact.</p></div></div>
+            </div>
+            <div class="tab-panel is-hidden" id="panel-explanations" role="tabpanel" aria-labelledby="tab-explanations">
+              <div id="explanationList"></div>
+              <div class="state-box is-hidden" id="explanationsEmpty"><div class="state-box__inner"><strong>No explanations returned</strong><p>The explanation service has no recorded rationale for this artifact.</p></div></div>
+            </div>
+          </div>
+            <div class="panel" style="margin:24px 0 0;box-shadow:none;background:rgba(4,8,16,0.4)">
+              <div class="panel__head"><div><h3>Generate PDF report</h3><p id="reportStatus">PDF reports are generated from the selected artifact's stored analysis.</p></div></div>
+              <div class="panel__body">
+                <div class="report-actions">
+                  <button class="btn btn--gold btn--sm" id="generateReportBtn" type="button" disabled>Generate PDF report</button>
+                  <a class="report-link is-hidden" id="reportDownloadLink" href="#" data-report-download data-report-name="report.pdf">Download PDF report <span aria-hidden="true">↗</span></a>
+                  <a class="btn btn--quiet btn--sm" href="/reports/" style="justify-self:start">View all reports →</a>
+                </div>
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="chartsTitle">
+      <div class="panel__head"><div><h2 id="chartsTitle">Live analytics</h2><p>Charts are rendered from API responses only.</p></div><button class="btn btn--quiet btn--sm" id="refreshChartsBtn" type="button">Reload charts</button></div>
+      <div class="panel__body grid-2">
+        <div>
+          <h3 style="margin-bottom:12px">Status distribution</h3>
+          <div class="chart-box"><canvas id="statusChart" aria-label="Media status distribution chart" role="img"></canvas></div>
+          <div class="state-box is-hidden" id="statusChartEmpty"><div class="state-box__inner"><strong>No distribution data</strong><p>The API returned no statuses to chart.</p></div></div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:12px">Analysis volume</h3>
+          <div class="chart-box"><canvas id="trendChart" aria-label="Analysis volume over time chart" role="img"></canvas></div>
+          <div class="state-box is-hidden" id="trendChartEmpty"><div class="state-box__inner"><strong>No trend data</strong><p>The API returned no dated volume series.</p></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="dash-stack">
+    <section class="panel" aria-labelledby="vizTitle">
+      <div class="panel__head"><div><h2 id="vizTitle">Forensic field view</h2><p>Selective three-dimensional evidence context.</p></div></div>
+      <div class="panel__body">
+        <div class="forensic-canvas" id="forensicCanvasMount" aria-label="Three-dimensional forensic visualization">
+          <span class="forensic-canvas__label">DFS / field visualization</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="suspiciousTitle">
+      <div class="panel__head"><div><h2 id="suspiciousTitle">Suspicious frames</h2><p>Frame-level flags from the selected analysis.</p></div></div>
+      <div class="panel__body">
+        <div class="frame-grid" id="suspiciousFrames"></div>
+        <div class="state-box" id="suspiciousEmpty"><div class="state-box__inner"><strong>Nothing flagged yet</strong><p>Select an artifact to inspect flagged frames.</p></div></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="libraryTitle">
+      <div class="panel__head"><div><h2 id="libraryTitle">Evidence library</h2><p id="libraryCaption">Loading media from /api/media/…</p></div><button class="btn btn--quiet btn--sm" id="refreshMediaBtn" type="button">Refresh</button></div>
+      <div class="panel__body panel__body--flush">
+        <div class="state-box is-hidden" id="mediaLoading"><div class="state-box__inner"><strong>Loading media</strong><p>Reading the media registry.</p></div></div>
+        <div class="state-box is-hidden" id="mediaEmpty"><div class="state-box__inner"><strong>No media found</strong><p>Upload evidence or adjust the workspace search.</p></div></div>
+        <div class="state-box is-hidden" id="mediaError"><div class="state-box__inner"><strong>Media unavailable</strong><p id="mediaErrorDetail">The media API could not be reached.</p></div></div>
+        <div class="table-wrap" id="mediaTableWrap">
+          <table class="data-table">
+            <thead><tr><th scope="col">Artifact</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+            <tbody id="mediaTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="caseContextTitle">
+      <div class="panel__head"><div><h2 id="caseContextTitle">Investigation context</h2><p>Open cases from the investigation registry.</p></div><a class="btn btn--quiet btn--sm" href="/investigations/">View all →</a></div>
+      <div class="panel__body">
+        <div class="state-box is-hidden" id="caseLoading"><div class="state-box__inner"><strong>Loading cases</strong><p>Reading investigations.</p></div></div>
+        <div class="state-box is-hidden" id="caseEmpty"><div class="state-box__inner"><strong>No cases returned</strong><p>Create an investigation from the investigations page.</p></div></div>
+        <div class="state-box state-box--error is-hidden" id="caseError"><div class="state-box__inner"><strong>Cases unavailable</strong><p>The investigations API could not be reached.</p></div></div>
+        <div id="caseList"></div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

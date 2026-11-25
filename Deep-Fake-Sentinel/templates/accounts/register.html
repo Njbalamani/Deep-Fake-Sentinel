@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Request access — DeepFake Sentinel{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block page_key %}auth{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-shell__grid">
+    <aside class="auth-aside">
+      <span class="eyebrow">Analyst enrollment</span>
+      <h2>Join the review chain.</h2>
+      <p>Accounts are scoped by role so case access, evidence handling and reporting remain accountable.</p>
+      <ul class="auth-aside__list">
+        <li><span aria-hidden="true">◇</span> Analyst — intake and examination</li>
+        <li><span aria-hidden="true">◇</span> Investigator — case ownership and review</li>
+        <li><span aria-hidden="true">◇</span> Administrator — workspace governance</li>
+      </ul>
+      <div style="margin-top:34px"><img src="{% static 'images/logo-mark.svg' %}" alt="" width="86" height="86"></div>
+    </aside>
+    <div class="auth-form-wrap">
+      <h1>Request access.</h1>
+      <p>Create your analyst account to begin working with evidence.</p>
+      <div class="form-alert" id="authAlert" role="alert" aria-live="assertive"></div>
+      <form class="form-grid" id="registerForm" novalidate>
+        <div class="field">
+          <label for="registerUsername">Username</label>
+          <input type="text" id="registerUsername" name="username" autocomplete="username" placeholder="analyst_01" required>
+          <span class="field__error" id="error_username" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="registerEmail">Work email</label>
+          <input type="email" id="registerEmail" name="email" autocomplete="email" placeholder="analyst@agency.gov" required>
+          <span class="field__error" id="error_email" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="registerRole">Assigned role</label>
+          <select id="registerRole" name="role">
+            <option value="analyst">Analyst</option>
+            <option value="investigator">Investigator</option>
+            <option value="admin">Administrator</option>
+          </select>
+          <span class="field__hint">Role determines your landing workspace after sign-in.</span>
+          <span class="field__error" id="error_role" aria-live="polite"></span>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" name="password" autocomplete="new-password" placeholder="Minimum 8 characters" required>
+            <span class="field__error" id="error_password" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="registerConfirm">Confirm password</label>
+            <input type="password" id="registerConfirm" name="confirm_password" autocomplete="new-password" placeholder="Repeat password" required>
+            <span class="field__error" id="error_confirm_password" aria-live="polite"></span>
+          </div>
+        </div>
+        <button class="btn btn--gold btn--block" id="registerSubmit" type="submit">Create account</button>
+      </form>
+      <p class="auth-form__foot">Already enrolled? <a href="{% url 'login' %}">Sign in</a><br>Review the <a href="/#limitations">model limitations</a> before analyzing evidence.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

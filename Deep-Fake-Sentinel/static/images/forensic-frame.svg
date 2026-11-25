@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="Forensic frame placeholder">
+  <defs>
+    <linearGradient id="dfsFrameBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101C33"/>
+      <stop offset="1" stop-color="#05080F"/>
+    </linearGradient>
+    <linearGradient id="dfsFrameGold" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6E3A1"/>
+      <stop offset="1" stop-color="#9A7826"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" rx="12" fill="url(#dfsFrameBg)"/>
+  <g stroke="#C9D2DF" stroke-opacity="0.09">
+    <path d="M0 50h640M0 100h640M0 150h640M0 200h640M0 250h640M0 300h640M0 350h640"/>
+    <path d="M64 0v400M128 0v400M192 0v400M256 0v400M320 0v400M384 0v400M448 0v400M512 0v400M576 0v400"/>
+  </g>
+  <g stroke="url(#dfsFrameGold)" stroke-width="3" stroke-linecap="square">
+    <path d="M24 76V24h52M564 24h52v52M616 324v52h-52M76 376H24v-52"/>
+  </g>
+  <circle cx="320" cy="176" r="54" stroke="#C9D2DF" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M252 302c8-44 33-66 68-66s60 22 68 66" stroke="#C9D2DF" stroke-opacity="0.32" stroke-width="2"/>
+  <path d="M224 200h392" stroke="url(#dfsFrameGold)" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="8 10"/>
+  <g fill="#D4AF37" fill-opacity="0.75">
+    <rect x="238" y="192" width="12" height="16"/>
+    <rect x="390" y="192" width="12" height="16"/>
+    <rect x="566" y="192" width="12" height="16"/>
+  </g>
+  <text x="24" y="360" fill="#C9D2DF" fill-opacity="0.55" font-family="monospace" font-size="13" letter-spacing="3">FRAME / NO SIGNAL DATA</text>
+</svg>

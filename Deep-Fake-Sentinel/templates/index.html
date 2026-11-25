@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}DeepFake Sentinel — Forensic Intelligence for Synthetic Media{% endblock %}
+
+{% block content %}
+<section class="hero" id="top">
+  <div class="shell hero__grid">
+    <div class="hero__copy">
+      <span class="eyebrow" data-hero>Verification is a discipline</span>
+      <h1 data-hero>See through <em>synthetic</em> reality.</h1>
+      <p class="hero__lead" data-hero>DeepFake Sentinel brings image, video and audio triage into one forensic command center — structured evidence, transparent analysis and reports built for professional review.</p>
+      <div class="hero__actions" data-hero>
+        <a class="btn btn--gold" href="{% url 'dashboard_home' %}">Enter command center <span class="btn__arrow" aria-hidden="true">↗</span></a>
+        <a class="btn btn--outline" href="{% url 'register' %}">Request analyst access</a>
+        <a class="btn btn--quiet" href="{% url 'login' %}">Sign in →</a>
+      </div>
+      <div class="hero__meta" data-hero>
+        <span>Image · Video · Audio</span>
+        <span>Case-linked evidence</span>
+        <span>Explainable outputs</span>
+      </div>
+    </div>
+    <div class="hero__visual" data-hero>
+      <div class="signal-frame" data-scan-frame>
+        <div class="signal-frame__top"><span><i class="signal-frame__dot" aria-hidden="true"></i>DFS / SIGNAL LAB 01</span><span>LIVE TRIAGE</span></div>
+        <img src="{% static 'images/hero-signal-grid.svg' %}" alt="Abstract signal grid used for media analysis visualization" width="720" height="480">
+        <div class="scanline" aria-hidden="true"></div>
+        <div class="signal-frame__bottom"><span>FFT · TEMPORAL · SPATIAL</span><span>SCAN PASS 01 / 04</span></div>
+      </div>
+      <div class="hero__float-card">
+        <small>Analysis state</small>
+        <strong id="heroStateLabel">Awaiting evidence</strong>
+        <div class="waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="hero__canvas" id="heroCanvasMount" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="platform">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">The platform</span>
+      <h2>One workspace. Every modality. Nothing implied.</h2>
+      <p class="lead">Investigators work across formats without losing context. Each artifact carries its own status, evidence trail and review path — from intake to defensible reporting.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">01</span>
+        <h3>Unified evidence intake</h3>
+        <p>Drag in images, videos and audio. Queue states, ownership and provenance stay attached to every file.</p>
+      </article>
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">02</span>
+        <h3>Modality-specific analysis</h3>
+        <p>Spatial artifacts, temporal inconsistencies and acoustic cues are surfaced separately, never collapsed into a single opaque score.</p>
+      </article>
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">03</span>
+        <h3>Forensic frame inspection</h3>
+        <p>Move from an overall finding to the exact frames, metadata and integrity signals that motivated it.</p>
+      </article>
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">04</span>
+        <h3>Case-driven workflow</h3>
+        <p>Assign investigations, log observations and keep an access history that supports review and handoff.</p>
+      </article>
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">05</span>
+        <h3>Interactive analytics</h3>
+        <p>Monitor throughput, status distribution and modality mix with charts fed by live API data.</p>
+      </article>
+      <article class="glass-card feature-card" data-reveal>
+        <span class="feature-card__icon" aria-hidden="true">06</span>
+        <h3>Report generation</h3>
+        <p>Produce structured reports from analyzed evidence and retrieve them from a single report registry.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="workflow">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Detection workflow</span>
+      <h2>From artifact to defensible conclusion.</h2>
+      <p class="lead">A deliberate pipeline keeps automation accountable to the analyst at every step.</p>
+    </div>
+    <div class="workflow">
+      <article class="workflow-step" data-reveal>
+        <span class="workflow-step__number">PHASE 01</span>
+        <h3>Ingest</h3>
+        <p>Secure multiple media files into the workspace with provenance and status tracked from arrival.</p>
+      </article>
+      <article class="workflow-step" data-reveal>
+        <span class="workflow-step__number">PHASE 02</span>
+        <h3>Examine</h3>
+        <p>Run modality-specific analyses, extract metadata and verify integrity without discarding context.</p>
+      </article>
+      <article class="workflow-step" data-reveal>
+        <span class="workflow-step__number">PHASE 03</span>
+        <h3>Corroborate</h3>
+        <p>Review suspicious frames, forensic timelines and explanations side by side with the source evidence.</p>
+      </article>
+      <article class="workflow-step" data-reveal>
+        <span class="workflow-step__number">PHASE 04</span>
+        <h3>Report</h3>
+        <p>Attach observations to an investigation and generate a report that records what was and was not established.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="capabilities">
+  <div class="shell capability-grid">
+    <div data-reveal>
+      <span class="eyebrow">Technical capabilities</span>
+      <h2>Built for serious review.</h2>
+      <p class="lead">The console exposes the signals behind a finding. Analysts see what the system measured, where it measured it and when it could not reach a conclusion.</p>
+      <div class="capability-list">
+        <div class="capability-item">
+          <span class="capability-item__mark">A/</span>
+          <div><h3>Signal visualization</h3><p>Selective three-dimensional forensic views for spatial and temporal context.</p></div>
+        </div>
+        <div class="capability-item">
+          <span class="capability-item__mark">B/</span>
+          <div><h3>Live API integration</h3><p>Dashboard, media and investigation views read directly from the service layer.</p></div>
+        </div>
+        <div class="capability-item">
+          <span class="capability-item__mark">C/</span>
+          <div><h3>Status polling</h3><p>Queued analyses update in place as backend jobs complete — no stale summary cards.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="console-preview" data-reveal aria-label="Example forensic API response">
+      <div class="console-preview__bar"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><span>forensic / session</span></div>
+      <pre><span class="tok-silver">GET</span> /api/forensics/{media_id}/
+{
+  <span class="tok-gold">"status"</span>: <span class="tok-silver">"pending_review"</span>,
+  <span class="tok-gold">"frames"</span>: [...],
+  <span class="tok-gold">"checkpoint"</span>: <span class="tok-silver">null</span>,
+  <span class="tok-gold">"conclusion"</span>: <span class="tok-silver">"Inconclusive — no trained checkpoint"</span>
+}
+
+<span class="tok-silver">GET</span> /api/integrity/{media_id}/
+{
+  <span class="tok-gold">"hash_verified"</span>: <span class="tok-silver">true</span>,
+  <span class="tok-gold">"evidence"</span>: [...]
+}</pre>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="limitations">
+  <div class="shell">
+    <div class="honesty" data-reveal>
+      <div class="honesty__grid">
+        <div>
+          <span class="eyebrow">Model honesty</span>
+          <h2>No checkpoint, no confidence.</h2>
+          <p class="lead">DeepFake Sentinel does not fabricate certainty. When a trained model checkpoint is absent or an analysis cannot be completed, the interface states the limit plainly.</p>
+          <p><span class="status-badge status-badge--inconclusive">Inconclusive — no trained checkpoint</span></p>
+        </div>
+        <div>
+          <ul>
+            <li>Detection results are decision support, not proof of authenticity.</li>
+            <li>Trained artifacts live in ml_models; browser assets are demonstration only.</li>
+            <li>Confidence values appear only when the API reports a trained checkpoint and a numeric result.</li>
+            <li>Generative techniques evolve — analyst review and corroborating evidence remain essential.</li>
+          </ul>
+          <div style="margin-top:24px">
+            <a class="btn btn--outline btn--sm" href="{% url 'dashboard_home' %}">Open analysis workspace</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="shell">
+    <div class="cta-band" data-reveal>
+      <h2>Bring clarity to contested media.</h2>
+      <p>Start with a structured workspace, follow the evidence, and document what the analysis can honestly support.</p>
+      <div class="cta-band__actions">
+        <a class="btn btn--gold" href="{% url 'register' %}">Create analyst account</a>
+        <a class="btn btn--outline" href="{% url 'dashboard_home' %}">Open command center</a>
+        <a class="btn btn--ghost" href="{% url 'login' %}">Sign in</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

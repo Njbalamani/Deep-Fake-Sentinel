@@ -1,0 +1,35 @@
+line-length = 120
+exclude = [
+  ".venv",
+  "staticfiles",
+  "media",
+  "node_modules",
+  "*/migrations/*",
+]
+
+[lint]
+select = ["E", "F", "I", "B", "S", "SIM", "UP", "RUF"]
+ignore = [
+  "BLE001",
+  "B017",
+  "B904",
+  "B905",
+  "C401",
+  "E501",
+  "E731",
+  "ISC004",
+  "RUF012",
+  "RUF046",
+  "S110",
+  "S112",
+  "S603",
+  "SIM102",
+  "SIM105",
+  "SIM108",
+  "UP031",
+  "UP017",
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["S101", "S106", "S105"]
+"ml_training/*" = ["S101", "T201"]

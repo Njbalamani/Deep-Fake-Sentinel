@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrative landing page preview</title>
+  <desc id="desc">Wireframe layout only. This is not a product screenshot.</desc>
+  <rect width="1200" height="750" fill="#f5f7fb"/>
+  <rect x="0" y="0" width="1200" height="80" fill="#16324f"/>
+  <text x="40" y="48" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">DEEPFAKE SENTINEL</text>
+  <rect x="920" y="22" width="110" height="36" rx="6" fill="#2e6f95"/>
+  <text x="947" y="46" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="16">Sign in</text>
+  <rect x="70" y="140" width="620" height="250" rx="12" fill="#ffffff" stroke="#c7d2de" stroke-width="2"/>
+  <rect x="100" y="175" width="420" height="24" rx="4" fill="#1b3b5a"/>
+  <rect x="100" y="220" width="540" height="14" rx="4" fill="#c7d2de"/>
+  <rect x="100" y="250" width="500" height="14" rx="4" fill="#d9e2ec"/>
+  <rect x="100" y="280" width="460" height="14" rx="4" fill="#d9e2ec"/>
+  <rect x="100" y="330" width="150" height="40" rx="6" fill="#2e6f95"/>
+  <text x="126" y="356" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="15">Start review</text>
+  <rect x="730" y="140" width="400" height="250" rx="12" fill="#e3ebf3" stroke="#c7d2de" stroke-width="2"/>
+  <text x="770" y="185" fill="#4a647c" font-family="Segoe UI, Arial, sans-serif" font-size="18">Evidence workflow</text>
+  <rect x="770" y="215" width="320" height="18" rx="4" fill="#ffffff"/>
+  <rect x="770" y="250" width="280" height="18" rx="4" fill="#ffffff"/>
+  <rect x="770" y="285" width="300" height="18" rx="4" fill="#ffffff"/>
+  <rect x="770" y="320" width="240" height="18" rx="4" fill="#ffffff"/>
+  <rect x="70" y="430" width="340" height="220" rx="12" fill="#ffffff" stroke="#c7d2de" stroke-width="2"/>
+  <rect x="430" y="430" width="340" height="220" rx="12" fill="#ffffff" stroke="#c7d2de" stroke-width="2"/>
+  <rect x="790" y="430" width="340" height="220" rx="12" fill="#ffffff" stroke="#c7d2de" stroke-width="2"/>
+  <text x="100" y="475" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Image</text>
+  <text x="460" y="475" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Video</text>
+  <text x="820" y="475" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Audio</text>
+  <rect x="70" y="690" width="1060" height="34" rx="6" fill="#fff4d6" stroke="#e0b34a"/>
+  <text x="88" y="712" fill="#6b4a00" font-family="Segoe UI, Arial, sans-serif" font-size="15">Illustrative preview - not a product screenshot. No trained weights are bundled.</text>
+</svg>

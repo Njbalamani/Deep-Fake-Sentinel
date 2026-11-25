@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrative report preview</title>
+  <desc id="desc">Wireframe layout only. This is not a product screenshot.</desc>
+  <rect width="1200" height="750" fill="#eef1f5"/>
+  <rect x="180" y="30" width="840" height="690" rx="6" fill="#ffffff" stroke="#c7d2de" stroke-width="2"/>
+  <rect x="180" y="30" width="840" height="90" fill="#16324f"/>
+  <text x="220" y="72" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Forensic review packet</text>
+  <text x="220" y="100" fill="#a9c2d6" font-family="Segoe UI, Arial, sans-serif" font-size="14">DEEPFAKE SENTINEL - illustrative layout</text>
+  <text x="220" y="160" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">1. Case summary</text>
+  <rect x="220" y="178" width="760" height="14" rx="4" fill="#d9e2ec"/>
+  <rect x="220" y="204" width="720" height="14" rx="4" fill="#e3ebf3"/>
+  <text x="220" y="260" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">2. Evidence inventory</text>
+  <rect x="220" y="278" width="760" height="120" fill="#f8fafc" stroke="#c7d2de"/>
+  <rect x="220" y="278" width="760" height="30" fill="#e3ebf3"/>
+  <text x="236" y="298" fill="#4a647c" font-family="Segoe UI, Arial, sans-serif" font-size="13">File</text>
+  <text x="520" y="298" fill="#4a647c" font-family="Segoe UI, Arial, sans-serif" font-size="13">SHA-256</text>
+  <text x="820" y="298" fill="#4a647c" font-family="Segoe UI, Arial, sans-serif" font-size="13">Status</text>
+  <text x="220" y="440" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">3. Findings</text>
+  <rect x="220" y="458" width="760" height="14" rx="4" fill="#d9e2ec"/>
+  <rect x="220" y="484" width="700" height="14" rx="4" fill="#e3ebf3"/>
+  <rect x="220" y="510" width="740" height="14" rx="4" fill="#e3ebf3"/>
+  <text x="220" y="570" fill="#1b3b5a" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">4. Limitations</text>
+  <rect x="220" y="588" width="760" height="14" rx="4" fill="#d9e2ec"/>
+  <rect x="220" y="614" width="680" height="14" rx="4" fill="#e3ebf3"/>
+  <rect x="220" y="664" width="760" height="34" rx="6" fill="#fff4d6" stroke="#e0b34a"/>
+  <text x="238" y="686" fill="#6b4a00" font-family="Segoe UI, Arial, sans-serif" font-size="14">Illustrative preview - not a product screenshot. No verdict or metric is shown.</text>
+</svg>

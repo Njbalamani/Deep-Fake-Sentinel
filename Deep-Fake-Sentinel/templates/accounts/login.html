@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign in — DeepFake Sentinel{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block page_key %}auth{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-shell__grid">
+    <aside class="auth-aside">
+      <span class="eyebrow">Secure access</span>
+      <h2>Continue the investigation.</h2>
+      <p>Authenticate to enter the forensic command center, review active evidence and manage case records.</p>
+      <ul class="auth-aside__list">
+        <li><span aria-hidden="true">◇</span> Modality-aware analysis workspace</li>
+        <li><span aria-hidden="true">◇</span> Case-linked evidence and observations</li>
+        <li><span aria-hidden="true">◇</span> Honest reporting when checkpoints are absent</li>
+      </ul>
+      <div style="margin-top:34px"><img src="{% static 'images/report-badge.svg' %}" alt="" width="86" height="86"></div>
+    </aside>
+    <div class="auth-form-wrap">
+      <h1>Welcome back.</h1>
+      <p>Sign in with your assigned analyst credentials.</p>
+      <div class="form-alert" id="authAlert" role="alert" aria-live="assertive"></div>
+      <form class="form-grid" id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginUsername">Username or email</label>
+          <input type="text" id="loginUsername" name="username" autocomplete="username" placeholder="analyst@agency.gov" required>
+          <span class="field__error" id="error_username" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="••••••••••" required>
+          <span class="field__error" id="error_password" aria-live="polite"></span>
+        </div>
+        <label class="chip" for="loginRemember" style="justify-self:start">
+          <input type="checkbox" id="loginRemember" name="remember" checked>
+          Keep session on this device
+        </label>
+        <button class="btn btn--gold btn--block" id="loginSubmit" type="submit">Sign in securely</button>
+      </form>
+      <p class="auth-form__foot">No credentials yet? <a href="{% url 'register' %}">Request analyst access</a><br>Workspace overview: <a href="/">public introduction</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

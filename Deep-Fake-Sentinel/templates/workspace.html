@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}workspace-page{% endblock %}
+
+{% block content %}
+<div class="workspace">
+  <aside class="workspace__sidebar" id="workspaceSidebar" aria-label="Workspace navigation">
+    <nav class="sidebar">
+      <span class="sidebar__label">Investigation suite</span>
+      <a class="sidebar__link {% if sidebar_active == 'home' %}is-active{% endif %}" href="/">
+        <i aria-hidden="true">⌂</i> Overview
+      </a>
+      <a class="sidebar__link {% if sidebar_active == 'dashboard' %}is-active{% endif %}" href="{% url 'dashboard_home' %}">
+        <i aria-hidden="true">◇</i> Command center
+      </a>
+      <a class="sidebar__link {% if sidebar_active == 'media' %}is-active{% endif %}" href="/media/">
+        <i aria-hidden="true">▣</i> Media library
+      </a>
+      <a class="sidebar__link {% if sidebar_active == 'investigations' %}is-active{% endif %}" href="/investigations/">
+        <i aria-hidden="true">⌁</i> Investigations
+      </a>
+      <a class="sidebar__link {% if sidebar_active == 'reports' %}is-active{% endif %}" href="/reports/">
+        <i aria-hidden="true">▤</i> Reports
+      </a>
+      <span class="sidebar__label">Analysis channels</span>
+      <a class="sidebar__link" href="/media/?media_type=image">
+        <i aria-hidden="true">◈</i> Image evidence
+      </a>
+      <a class="sidebar__link" href="/media/?media_type=video">
+        <i aria-hidden="true">▶</i> Video evidence
+      </a>
+      <a class="sidebar__link" href="/media/?media_type=audio">
+        <i aria-hidden="true">∿</i> Audio evidence
+      </a>
+      <div class="sidebar__note">
+        <strong>Evidence standard</strong>
+        No trained checkpoint means no confidence claim. Results remain inconclusive and require analyst review.
+      </div>
+    </nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="workspace__main">
+    <div class="topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle workspace navigation" aria-controls="workspaceSidebar" aria-expanded="false">☰</button>
+      <div class="topbar__title">
+        <small>{% block workspace_breadcrumb %}Workspace{% endblock %}</small>
+        <strong>{% block workspace_title %}Workspace{% endblock %}</strong>
+      </div>
+      <div class="topbar__actions">
+        <form class="topbar__search" id="topbarSearchForm" role="search">
+          <span aria-hidden="true">⌕</span>
+          <label class="is-hidden" for="topbarSearch">Search workspace</label>
+          <input type="search" id="topbarSearch" name="search" placeholder="Search evidence, cases, reports" autocomplete="off">
+        </form>
+        <div class="user-chip" id="userChip" aria-live="polite">
+          <span class="user-chip__avatar" id="userInitials">?</span>
+          <span id="userLabel">Session unknown</span>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+    <div class="workspace__content">
+      {% block workspace_head %}{% endblock %}
+      {% block workspace_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

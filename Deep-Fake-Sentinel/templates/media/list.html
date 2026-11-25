@@ -1,0 +1,46 @@
+{% extends "workspace.html" %}
+{% load static %}
+
+{% block title %}Media library — DeepFake Sentinel{% endblock %}
+{% block sidebar_active %}media{% endblock %}
+{% block workspace_breadcrumb %}Workspace / Evidence registry{% endblock %}
+{% block workspace_title %}Media library{% endblock %}
+{% block page_key %}media{% endblock %}
+
+{% block workspace_head %}
+<div class="page-head">
+  <div>
+    <h1>Evidence library.</h1>
+    <p>Filter artifacts, inspect live status and trigger reprocessing or report generation.</p>
+  </div>
+  <div class="page-head__actions">
+    <button class="btn btn--ghost btn--sm" id="refreshMediaLibraryBtn" type="button">Refresh</button>
+    <a class="btn btn--gold btn--sm" href="/dashboard/#uploadPanel">Upload evidence</a>
+  </div>
+</div>
+<form class="filter-bar" id="mediaFilters" role="search">
+  <div class="field"><label for="mediaSearch">Search artifacts</label><input type="search" id="mediaSearch" name="search" placeholder="Filename or media ID"></div>
+  <div class="field"><label for="mediaStatusFilter">Status</label><select id="mediaStatusFilter" name="status"><option value="">All statuses</option><option value="pending">Pending</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="failed">Failed</option></select></div>
+  <div class="field"><label for="mediaTypeFilter">Modality</label><select id="mediaTypeFilter" name="media_type"><option value="">All modalities</option><option value="image">Image</option><option value="video">Video</option><option value="audio">Audio</option></select></div>
+  <button class="btn btn--outline btn--sm" type="submit">Apply filters</button>
+  <button class="btn btn--quiet btn--sm" id="clearMediaFilters" type="button">Clear</button>
+</form>
+<p class="muted mono" id="mediaLibrarySummary" aria-live="polite">Loading media registry…</p>
+{% endblock %}
+
+{% block workspace_content %}
+<section class="panel" aria-labelledby="mediaLibraryTitle">
+  <div class="panel__head"><div><h2 id="mediaLibraryTitle">Artifacts</h2><p>All values reflect the current media API response.</p></div></div>
+  <div class="panel__body panel__body--flush">
+    <div class="state-box" id="mediaLibraryLoading"><div class="state-box__inner"><strong>Loading artifacts</strong><p>Reading the media registry.</p></div></div>
+    <div class="state-box is-hidden" id="mediaLibraryEmpty"><div class="state-box__inner"><img src="{% static 'images/forensic-frame.svg' %}" alt="" width="220" height="138"><strong>No artifacts found</strong><p>Upload evidence or change the active filters.</p></div></div>
+    <div class="state-box state-box--error is-hidden" id="mediaLibraryError"><div class="state-box__inner"><strong>Media unavailable</strong><p id="mediaLibraryErrorDetail">The media API could not be reached.</p></div></div>
+    <div class="table-wrap" id="mediaLibraryWrap">
+      <table class="data-table">
+        <thead><tr><th scope="col">Artifact</th><th scope="col">Modality</th><th scope="col">Status</th><th scope="col">Added</th><th scope="col">Actions</th></tr></thead>
+        <tbody id="mediaLibraryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

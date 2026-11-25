@@ -1,0 +1,44 @@
+{% extends "workspace.html" %}
+{% load static %}
+
+{% block title %}Reports — DeepFake Sentinel{% endblock %}
+{% block sidebar_active %}reports{% endblock %}
+{% block workspace_breadcrumb %}Workspace / Report registry{% endblock %}
+{% block workspace_title %}Generated reports{% endblock %}
+{% block page_key %}reports{% endblock %}
+
+{% block workspace_head %}
+<div class="page-head">
+  <div>
+    <h1>Report registry.</h1>
+    <p>Retrieve generated PDF reports built from stored evidence.</p>
+  </div>
+  <div class="page-head__actions">
+    <button class="btn btn--ghost btn--sm" id="refreshReportsBtn" type="button">Refresh</button>
+    <a class="btn btn--gold btn--sm" href="/media/">Generate from evidence</a>
+  </div>
+</div>
+<form class="filter-bar" id="reportFilters" role="search">
+  <div class="field"><label for="reportSearch">Search reports</label><input type="search" id="reportSearch" name="search" placeholder="Report ID or media name"></div>
+  <button class="btn btn--outline btn--sm" type="submit">Apply search</button>
+  <button class="btn btn--quiet btn--sm" id="clearReportFilters" type="button">Clear</button>
+</form>
+<p class="muted mono" id="reportSummary" aria-live="polite">Loading report registry…</p>
+{% endblock %}
+
+{% block workspace_content %}
+<section class="panel" aria-labelledby="reportTableTitle">
+  <div class="panel__head"><div><h2 id="reportTableTitle">Generated documents</h2><p>Downloads resolve to protected PDF endpoints supplied by the reports API.</p></div></div>
+  <div class="panel__body panel__body--flush">
+    <div class="state-box" id="reportLoading"><div class="state-box__inner"><strong>Loading reports</strong><p>Reading the report registry.</p></div></div>
+    <div class="state-box is-hidden" id="reportEmpty"><div class="state-box__inner"><img src="{% static 'images/report-badge.svg' %}" alt="" width="80" height="80"><strong>No reports found</strong><p>Generate a report from an analyzed media artifact.</p></div></div>
+    <div class="state-box state-box--error is-hidden" id="reportError"><div class="state-box__inner"><strong>Reports unavailable</strong><p id="reportErrorDetail">The reports API could not be reached.</p></div></div>
+    <div class="table-wrap" id="reportTableWrap">
+      <table class="data-table">
+        <thead><tr><th scope="col">Report</th><th scope="col">Format</th><th scope="col">Generated</th><th scope="col">Action</th></tr></thead>
+        <tbody id="reportTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
