@@ -74,10 +74,201 @@ flowchart TD
 | Start containers | `docker compose --env-file .env -f docker/docker-compose.yml up --build -d` |
 | Start Celery worker | `celery -A config worker --loglevel=info` |
 
+## Detailed flowcharts
+
+| Diagram | What it explains |
+| --- | --- |
+| End-to-end platform lifecycle | From repository structure to stored evidence and final report. |
+| Request and task flow | How authentication, upload, queueing, and result storage work. |
+| Modality analysis pipeline | How image, video, and audio analysis branches behave. |
+| Checkpoint decision flow | Why missing or invalid weights produce `INCONCLUSIVE`. |
+| Training and evaluation loop | How manifests, training, metrics, and serving connect. |
+| Report generation flow | How stored evidence becomes a PDF report. |
+| Deployment topology | How browser, Nginx, Gunicorn, Celery, Redis, PostgreSQL, and volumes connect. |
+| Authenticated download flow | How private media and report downloads are authorized. |
+
+### End-to-end platform lifecycle
+
+```mermaid
+flowchart LR
+    Root[Repository root README] --> App[Deep-Fake-Sentinel application folder]
+    App --> Config[Settings, URLs, Celery wiring]
+    App --> UI[Templates, CSS, JavaScript workspace]
+    App --> API[Django REST API]
+    App --> ML[ML training and inference tooling]
+    App --> Docs[Architecture, API, deployment, ER docs]
+    App --> Tests[Regression and integration tests]
+    UI --> API
+    API --> DB[(PostgreSQL)]
+    API --> Queue[(Redis broker)]
+    Queue --> Worker[Celery worker]
+    Worker --> Media[(Private media volume)]
+    Worker --> Models[Checkpoints in ml_models]
+    Worker --> Evidence[Metadata, integrity, forensics, explanations]
+    Evidence --> DB
+    Evidence --> Report[ReportLab PDF]
+    Report --> Media
+    DB --> Dashboard[Scoped dashboard metrics]
+```
+
+### Request and task flow
+
+```mermaid
+flowchart TD
+    Client[Browser or API client] --> Auth{Authenticated and scoped?}
+    Auth -- No --> Denied[401 or 404 response]
+    Auth -- Yes --> Upload[POST media upload]
+    Upload --> Validate[Validate extension, MIME, magic bytes, and size]
+    Validate -- Invalid --> Reject[400 validation error]
+    Validate -- Valid --> Hash[Compute SHA-256 and sanitize filename]
+    Hash --> Record[Create Media record with status RECEIVED]
+    Record --> Queue[Enqueue Celery process_media task]
+    Queue --> Worker[Celery worker loads media and requested modality]
+    Worker --> Analyze[Run preprocessing, inference, and forensic checks]
+    Analyze --> Store[Store analysis, evidence, and provenance in PostgreSQL]
+    Store --> Status[Update media status to COMPLETED]
+    Status --> Read[API exposes scoped result to the owner]
+```
+
+### Modality analysis pipeline
+
+```mermaid
+flowchart TD
+    Start[Media record] --> Modality{Modality}
+    Modality --> Image[Image pipeline]
+    Modality --> Video[Video pipeline]
+    Modality --> Audio[Audio pipeline]
+
+    Image --> ImagePrep[EXIF transpose, RGB, resize, center crop, normalize]
+    Video --> VideoPrep[Sample frames, resize, center crop, normalize, stack]
+    Audio --> AudioPrep[Mono 16 kHz, trim or pad, log-mel, normalize]
+
+    ImagePrep --> Face[MediaPipe face-count heuristic with OpenCV fallback]
+    Face --> ImageModel{Image checkpoint valid?}
+    VideoPrep --> VideoModel{Video checkpoint valid?}
+    AudioPrep --> AudioModel{Audio checkpoint valid?}
+
+    ImageModel -- No --> Inconclusive["INCONCLUSIVE<br/>confidence = null"]
+    VideoModel -- No --> Inconclusive
+    AudioModel -- No --> Inconclusive
+
+    ImageModel -- Yes --> ImageResult[Strict ResNet-18 inference result]
+    VideoModel -- Yes --> VideoResult[Strict r3d_18 inference result]
+    AudioModel -- Yes --> AudioResult[Strict log-mel CNN inference result]
+
+    ImageResult --> Integrity[SHA-256 and container integrity checks]
+    VideoResult --> Integrity
+    AudioResult --> Integrity
+    Integrity --> Metadata[EXIF and container metadata observations]
+    Metadata --> Forensics[Deterministic forensic aggregation]
+    Forensics --> Explanation[Labelled deterministic or optional LLM explanation]
+    Explanation --> Persist[Persist evidence and checkpoint provenance]
+```
+
+### Checkpoint decision flow
+
+```mermaid
+flowchart TD
+    Load[Load configured checkpoint] --> Exists{File exists?}
+    Exists -- No --> Missing["INCONCLUSIVE<br/>reason: checkpoint_missing"]
+    Exists -- Yes --> Read[Read payload with torch.load]
+    Read --> Format{Valid payload and version?}
+    Format -- No --> Invalid["INCONCLUSIVE<br/>reason: invalid_checkpoint"]
+    Format -- Yes --> Labels{Labels resolve to real and fake?}
+    Labels -- No --> BadLabels["INCONCLUSIVE<br/>reason: invalid_labels"]
+    Labels -- Yes --> Build[Build model architecture from shared builder]
+    Build --> Weights{State dict loads strictly?}
+    Weights -- No --> Mismatch["INCONCLUSIVE<br/>reason: model_state_mismatch"]
+    Weights -- Yes --> Ready[Run inference and record checkpoint ID plus SHA-256]
+```
+
+### Training and evaluation loop
+
+```mermaid
+flowchart LR
+    Data[Legally obtained local dataset] --> Manifest[CSV manifest: path,label,split]
+    Manifest --> Split[Train and validation split]
+    Split --> Train[Training script for image, video, or audio]
+    Train --> Preprocess[Shared deterministic preprocessing]
+    Preprocess --> Checkpoint[Checkpoint PT file]
+    Train --> Metrics[Metrics JSON from real runs]
+    Checkpoint --> Eval[Evaluation script on held-out test split]
+    Eval --> Evaluation[Evaluation JSON]
+    Evaluation --> Review[Human review of metrics and limitations]
+    Review --> Accept{Accept for serving?}
+    Accept -- No --> Iterate[Adjust manifest, training, or threshold]
+    Accept -- Yes --> Serve[Copy checkpoint into ml_models modality weights]
+    Iterate --> Train
+    Serve --> Inference[Strict train-serve inference]
+```
+
+### Report generation flow
+
+```mermaid
+flowchart TD
+    Evidence[Stored media, analysis, and forensic evidence] --> Select[Investigator selects media or case]
+    Select --> Generate[POST /api/reports/generate/media_id]
+    Generate --> Scope{Can user access this media?}
+    Scope -- No --> Denied[404 or 403 response]
+    Scope -- Yes --> Collect[Collect observations, verdicts, hashes, and caveats]
+    Collect --> Render[ReportLab renders PDF report]
+    Render --> Hash[Compute report SHA-256 and chain hash]
+    Hash --> Save[Store report record on private media volume]
+    Save --> Download[GET /api/reports/id/download]
+    Download --> Audit[Write access log and return PDF]
+```
+
+### Deployment topology
+
+```mermaid
+flowchart LR
+    Browser[Browser or API client] --> Nginx[Nginx TLS and static files]
+    Nginx --> Gunicorn[Gunicorn WSGI workers]
+    Gunicorn --> Django[Django application]
+    Django --> DB[(PostgreSQL)]
+    Django --> Redis[(Redis broker and result backend)]
+    Redis --> Celery[Celery worker]
+    Celery --> DB
+    Celery --> Media[(Private media volume)]
+    Celery --> Models[(Read-only ml_models mount)]
+    Django --> Static[(Static files)]
+    Nginx --> Static
+    Models --> Checkpoints[Image, video, audio, and MediaPipe assets]
+```
+
+### Authenticated download flow
+
+```mermaid
+sequenceDiagram
+    participant U as Investigator
+    participant UI as Workspace UI
+    participant API as Django REST API
+    participant DB as PostgreSQL
+    participant FS as Private media volume
+
+    U->>UI: Open media or report page
+    UI->>API: GET scoped resource with session or token
+    API->>DB: Check ownership, assignment, and linked case access
+    DB-->>API: Authorization result
+    alt Access denied
+        API-->>UI: 404 or 403
+        UI-->>U: Hidden or error state
+    else Access allowed
+        API-->>UI: Metadata and protected download_url
+        U->>API: GET /api/media/id/download or /api/reports/id/download
+        API->>DB: Recheck object-level permission
+        API->>FS: Open stored file stream
+        FS-->>API: File bytes
+        API->>DB: Write access log
+        API-->>U: Protected file response
+    end
+```
+
 ---
 
 ## Table of contents
 
+0. [Detailed flowcharts](#detailed-flowcharts)
 1. [Project introduction](#1-project-introduction)
 2. [Problem statement](#2-problem-statement)
 3. [Objectives](#3-objectives)
